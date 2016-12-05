@@ -3,9 +3,8 @@
 
 class Matrix : public Php::Base
 {
-private:
-  void* m;
 public:
+  void* m;
   Matrix() = default;
   ~Matrix();
   void __construct(Php::Parameters&); // PHP constructor
