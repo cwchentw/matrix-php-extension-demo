@@ -8,8 +8,8 @@ public:
   Matrix() = default;
   ~Matrix();
   void __construct(Php::Parameters&); // PHP constructor
-  Php::Value get_at(Php::Parameters&);
-  void set_at(Php::Parameters&);
+  Php::Value get(Php::Parameters&);
+  void set(Php::Parameters&);
 };
 
 Matrix::~Matrix()
@@ -22,15 +22,15 @@ void Matrix::__construct(Php::Parameters &params)
   this->m = matrix_new((int32_t)params[0], (int32_t)params[1]);
 }
 
-Php::Value Matrix::get_at(Php::Parameters &params)
+Php::Value Matrix::get(Php::Parameters &params)
 {
-  return matrix_get_at(this->m, (int32_t)params[0], (int32_t)params[1]);
+  return matrix_get(this->m, (int32_t)params[0], (int32_t)params[1]);
 }
 
-void Matrix::set_at(Php::Parameters &params)
+void Matrix::set(Php::Parameters &params)
 {
-  matrix_set_at(this->m, (double)params[0],
-                (int32_t)params[1], (int32_t)params[2]);
+  matrix_set(this->m, (int32_t)params[0],
+             (int32_t)params[1], (double)params[2]);
 }
 
 /**
@@ -53,17 +53,17 @@ extern "C" {
 
         Php::Class<Matrix> matrix("Matrix");
         matrix.method<&Matrix::__construct>("__construct", {
+            Php::ByVal("nrow", Php::Type::Numeric),
+              Php::ByVal("ncol", Php::Type::Numeric)
+              });
+        matrix.method<&Matrix::get>("get", {
             Php::ByVal("row", Php::Type::Numeric),
               Php::ByVal("col", Php::Type::Numeric)
               });
-        matrix.method<&Matrix::get_at>("get_at", {
+        matrix.method<&Matrix::set>("set", {
             Php::ByVal("row", Php::Type::Numeric),
-              Php::ByVal("col", Php::Type::Numeric)
-              });
-        matrix.method<&Matrix::set_at>("set_at", {
-            Php::ByVal("value", Php::Type::Float),
-              Php::ByVal("row", Php::Type::Numeric),
-              Php::ByVal("col", Php::Type::Numeric)
+              Php::ByVal("col", Php::Type::Numeric),
+              Php::ByVal("value", Php::Type::Float)
               });
 
         extension.add(std::move(matrix));
